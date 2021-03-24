@@ -1,12 +1,13 @@
 import {Component, ViewChild} from '@angular/core';
 
-import {Connection, Dialogs, DrawingTools, Edge, jsPlumbToolkit, Surface} from "jsplumbtoolkit";
-
-import { jsPlumbSurfaceComponent, AngularViewOptions } from "jsplumbtoolkit-angular";
+import { jsPlumbSurfaceComponent, AngularViewOptions } from "@jsplumbtoolkit/angular";
 
 import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from "./components";
 
-import "jsplumbtoolkit-editable-connectors";
+import {BrowserUI, Surface} from "@jsplumbtoolkit/browser-ui"
+import {Edge, Connection} from "@jsplumbtoolkit/core"
+import {EdgePathEditor} from "@jsplumbtoolkit/connector-editors"
+import {FlowchartService} from "./app/flowchart.service"
 
 @Component({
   selector: 'jsplumb-flowchart',
@@ -51,8 +52,9 @@ export class FlowchartComponent {
 
   @ViewChild(jsPlumbSurfaceComponent) surfaceComponent:jsPlumbSurfaceComponent;
 
-  toolkit:jsPlumbToolkit;
-  surface:Surface;
+  toolkit:BrowserUI
+  surface:Surface
+  pathEditor:EdgePathEditor
 
   toolkitId:string;
   surfaceId:string;
@@ -63,12 +65,12 @@ export class FlowchartComponent {
     { label: "Output", type: "output", w:120, h:90 }
   ];
 
-  constructor() {
+  constructor(private flowchartService:FlowchartService) {
     this.toolkitId = "flowchart";
     this.surfaceId = "flowchartSurface";
   }
 
-  getToolkit():jsPlumbToolkit {
+  getToolkit():BrowserUI {
     return this.toolkit;
   }
 
@@ -81,7 +83,7 @@ export class FlowchartComponent {
   }
 
   editLabel(edge:any) {
-    Dialogs.show({
+    this.flowchartService.showDialog({
       id: "dlgText",
       data: {
         text: edge.data.label || ""
@@ -121,15 +123,15 @@ export class FlowchartComponent {
       "default": {
         anchor:"AutoDefault",
         endpoint:"Blank",
-        connector: ["EditableFlowchart", { cornerRadius: 5 } ],
+        connector: { type:"Orthogonal", options:{ cornerRadius: 5 } },
         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
         events: {
           click:(p) => {
-            (<any>this.surface).startEditing(p.edge, {
+            this.pathEditor.startEditing(p.edge, {
               deleteButton:true,
               onMaybeDelete:(edge:Edge, conn:Connection, doDelete:Function) => {
-                Dialogs.show({
+                this.flowchartService.showDialog({
                   id: "dlgConfirm",
                   data: {
                     msg: "Delete Edge"
@@ -139,26 +141,25 @@ export class FlowchartComponent {
               }
             });
           }
-
-
         },
         overlays: [
-          [ "Arrow", { location: 1, width: 10, length: 10 }]
+          { type:"Arrow", options:{ location: 1, width: 10, length: 10 }}
         ]
       },
       "connection":{
         parent:"default",
         overlays:[
-          [
-            "Label", {
-            label: "${label}",
-            events:{
-              click:(params:any) => {
-                this.editLabel(params.edge);
+          {
+            type: "Label",
+            options: {
+              label: "${label}",
+              events: {
+                click: (params: any) => {
+                  this.editLabel(params.edge);
+                }
               }
             }
           }
-          ]
         ]
       }
     },
@@ -191,13 +192,13 @@ export class FlowchartComponent {
       type:"Spring"
     },
     events: {
-      edgeAdded:(params:any) => {
+      "edge:add":(params:any) => {
         if (params.addedByMouse) {
           this.editLabel(params.edge);
         }
       },
       canvasClick:(params:any) => {
-        (<any>this.surface).stopEditing();
+        this.pathEditor.stopEditing()
       }
     },
     consumeRightClick:false,
@@ -205,7 +206,7 @@ export class FlowchartComponent {
       filter: ".jtk-draw-handle, .node-action, .node-action i"
     },
     zoomToFit:true
-  };
+  }
 
   dataGenerator(el:Element) {
     return {
@@ -217,11 +218,12 @@ export class FlowchartComponent {
 
   ngAfterViewInit() {
     this.surface = this.surfaceComponent.surface;
-    this.toolkit = this.surface.getToolkit()
+    this.toolkit = this.surface.toolkitInstance
+    this.pathEditor = new EdgePathEditor(this.surface)
 
-    new DrawingTools({
-      renderer: this.surface
-    });
+    // new DrawingTools({
+    //   renderer: this.surface
+    // });
   }
 
   ngOnDestroy() {

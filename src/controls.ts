@@ -1,8 +1,8 @@
 import { Input, Component, ElementRef } from '@angular/core';
 
-import {jsPlumbToolkitUndoRedo} from "jsplumbtoolkit-undo-redo";
-import {jsPlumb, Surface} from "jsplumbtoolkit";
-import {jsPlumbService} from "jsplumbtoolkit-angular";
+import {createUndoRedoManager, jsPlumbToolkitUndoRedoManager} from "@jsplumbtoolkit/undo-redo"
+import {Surface} from "@jsplumbtoolkit/browser-ui"
+import {jsPlumbService} from "@jsplumbtoolkit/angular"
 
 // --------------------------------------- CONTROLS COMPONENT ------------------------------------------------------------------
 //
@@ -27,7 +27,7 @@ export class ControlsComponent {
   @Input() surfaceId: string;
 
   surface:Surface;
-  undoManager:jsPlumbToolkitUndoRedo;
+  undoManager:jsPlumbToolkitUndoRedoManager;
 
   constructor(private el: ElementRef, private $jsplumb:jsPlumbService) { }
 
@@ -44,12 +44,12 @@ export class ControlsComponent {
   }
 
   zoomToFit() {
-    this.surface.getToolkit().clearSelection();
-    this.surface.zoomToFit();
+    this.surface.toolkitInstance.clearSelection()
+    this.surface.zoomToFit()
   }
 
   undo() {
-    this.undoManager.undo();
+    this.undoManager.undo()
   }
 
   redo() {
@@ -62,29 +62,29 @@ export class ControlsComponent {
       this.surface = s;
       this.surface.bind("modeChanged", (mode:String) => {
         let controls = this.getNativeElement(this.el);
-        jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
-        jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
+        // this.surface.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
+        // this.surface.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
       });
 
-      this.undoManager = new jsPlumbToolkitUndoRedo({
+      this.undoManager = createUndoRedoManager({
         surface:this.surface,
         compound:true,
-        onChange:(mgr:jsPlumbToolkitUndoRedo, undoSize:number, redoSize:number) => {
+        onChange:(mgr:jsPlumbToolkitUndoRedoManager, undoSize:number, redoSize:number) => {
           let controls = this.getNativeElement(this.el);
           controls.setAttribute("can-undo", undoSize > 0);
           controls.setAttribute("can-redo", redoSize > 0);
         }
       });
 
-      this.surface.bind("canvasClick", () => this.surface.getToolkit().clearSelection());
+      this.surface.bind("canvasClick", () => this.surface.toolkitInstance.clearSelection())
 
     });
   }
 
   clear() {
-    const t = this.surface.getToolkit();
+    const t = this.surface.toolkitInstance
     if (t.getNodeCount() === 0 || confirm("Clear flowchart?")) {
-      t.clear();
+      t.clear()
     }
   }
 }

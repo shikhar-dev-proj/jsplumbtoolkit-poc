@@ -2,8 +2,11 @@ import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 
 import {FlowchartComponent } from "./flowchart";
 import {DatasetComponent } from "./dataset";
-import { Dialogs, jsPlumbToolkit, jsPlumb, jsPlumbUtil  } from "jsplumbtoolkit";
-import { jsPlumbService } from "jsplumbtoolkit-angular";
+
+import { jsPlumbService } from "@jsplumbtoolkit/angular"
+import {BrowserUI} from "@jsplumbtoolkit/browser-ui"
+import { uuid } from "@jsplumbtoolkit/core"
+import {FlowchartService} from "./app/flowchart.service"
 
 @Component({
     selector: 'jsplumb-demo',
@@ -20,10 +23,10 @@ export class AppComponent {
   @ViewChild(FlowchartComponent) flowchart:FlowchartComponent;
   @ViewChild(DatasetComponent) dataset:DatasetComponent;
 
-  toolkitId:string;
-  toolkit:jsPlumbToolkit;
+  toolkitId:string
+  toolkit:BrowserUI
 
-  constructor(private $jsplumb:jsPlumbService, private elementRef:ElementRef) {
+  constructor(private $jsplumb:jsPlumbService, private elementRef:ElementRef, private flowchartService:FlowchartService) {
     this.toolkitId = this.elementRef.nativeElement.getAttribute("toolkitId");
   }
 
@@ -35,9 +38,9 @@ export class AppComponent {
     this.toolkit.load({ url:"data/copyright.json" });
   }
 
-  toolkitParams = {
+  toolkitParams:any = {
     nodeFactory:(type:string, data:any, callback:Function) => {
-      Dialogs.show({
+      this.flowchartService.showDialog({
         id: "dlgText",
         title: "Enter " + type + " name:",
         onOK: (d:any) => {
@@ -47,7 +50,7 @@ export class AppComponent {
             // and it was at least 2 chars
             if (data.text.length >= 2) {
               // set an id and continue.
-              data.id = jsPlumbUtil.uuid();
+              data.id = uuid()
               callback(data);
             }
             else

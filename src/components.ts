@@ -1,6 +1,7 @@
-import {Dialogs, Node} from "jsplumbtoolkit";
-import {BaseNodeComponent} from "jsplumbtoolkit-angular";
+import {Node} from "@jsplumbtoolkit/core"
+import {BaseNodeComponent} from "@jsplumbtoolkit/angular"
 import {Component} from "@angular/core";
+import {FlowchartService} from "./app/flowchart.service"
 
 
 function isNode(obj:any):obj is Node {
@@ -12,11 +13,15 @@ function isNode(obj:any):obj is Node {
  */
 export class BaseEditableNodeComponent extends BaseNodeComponent {
 
+  constructor(protected flowchartService:FlowchartService) {
+    super()
+  }
+
   removeNode () {
     let obj = this.getNode();
     if (obj != null) {
       if (isNode(obj)) {
-        Dialogs.show({
+        this.flowchartService.showDialog({
           id: "dlgConfirm",
           data: {
             msg: "Delete '" + obj.data.text + "'"
@@ -31,7 +36,7 @@ export class BaseEditableNodeComponent extends BaseNodeComponent {
 
   editNode() {
     let obj = this.getNode();
-    Dialogs.show({
+    this.flowchartService.showDialog({
       id: "dlgText",
       data: obj.data,
       title: "Edit " + obj.data.type + " name",
@@ -50,21 +55,37 @@ export class BaseEditableNodeComponent extends BaseNodeComponent {
 // ----------------- question node -------------------------------
 
 @Component({ templateUrl:"templates/question.html" })
-export class QuestionNodeComponent extends BaseEditableNodeComponent { }
+export class QuestionNodeComponent extends BaseEditableNodeComponent {
+  constructor(flowchartService:FlowchartService) {
+    super(flowchartService)
+  }
+}
 
 // ----------------- action node -------------------------------
 
 @Component({ templateUrl:"templates/action.html" })
-export class ActionNodeComponent extends BaseEditableNodeComponent  { }
+export class ActionNodeComponent extends BaseEditableNodeComponent  {
+  constructor(flowchartService:FlowchartService) {
+    super(flowchartService)
+  }
+}
 
 // ----------------- start node -------------------------------
 
 @Component({ templateUrl:"templates/start.html" })
-export class StartNodeComponent extends BaseEditableNodeComponent  { }
+export class StartNodeComponent extends BaseEditableNodeComponent  {
+  constructor(flowchartService:FlowchartService) {
+    super(flowchartService)
+  }
+}
 
 // ----------------- output node -------------------------------
 
 @Component({ templateUrl:"templates/output.html" })
-export class OutputNodeComponent extends BaseEditableNodeComponent  { }
+export class OutputNodeComponent extends BaseEditableNodeComponent  {
+  constructor(flowchartService:FlowchartService) {
+    super(flowchartService)
+  }
+}
 
 // -------------- /node components ------------------------------------
