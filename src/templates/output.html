@@ -1,4 +1,5 @@
-<div [style.width]="obj.w + 'px'" [style.height]="obj.h +'px'" class="flowchart-object flowchart-output">
+<div [style.width]="obj.w + 'px'" [style.height]="obj.h +'px'" class="flowchart-object flowchart-output"
+     data-jtk-target="true" data-jtk-target-port-type="target">
     <div>
         <svg [attr.width]="obj.w" [attr.height]="obj.h">
             <rect [attr.x]="0" [attr.y]="0" [attr.width]="obj.w" [attr.height]="obj.h"/>
@@ -7,5 +8,4 @@
     </div>
     <div class="node-edit node-action" (click)="editNode()"></div>
     <div class="node-delete node-action delete" (click)="removeNode()"></div>
-    <jtk-target port-type="target"></jtk-target>
 </div>
