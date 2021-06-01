@@ -1,11 +1,11 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 
 import {FlowchartComponent } from "./flowchart";
 import {DatasetComponent } from "./dataset";
 
 import { jsPlumbService } from "@jsplumbtoolkit/angular"
 import {BrowserUI} from "@jsplumbtoolkit/browser-ui"
-import { uuid } from "@jsplumbtoolkit/core"
+import { uuid } from "@jsplumb/util"
 import {FlowchartService} from "./app/flowchart.service"
 
 @Component({

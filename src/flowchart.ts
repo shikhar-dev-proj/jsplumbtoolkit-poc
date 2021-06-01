@@ -4,10 +4,25 @@ import { jsPlumbSurfaceComponent, AngularViewOptions } from "@jsplumbtoolkit/ang
 
 import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from "./components";
 
-import {BrowserUI, Surface} from "@jsplumbtoolkit/browser-ui"
-import {Edge, Connection} from "@jsplumbtoolkit/core"
+import {BrowserUI, Surface, EVENT_CANVAS_CLICK} from "@jsplumbtoolkit/browser-ui"
+import {Edge, EVENT_EDGE_ADDED} from "@jsplumbtoolkit/core"
+import { Connection, BlankEndpoint, DEFAULT, AnchorLocations, LabelOverlay, ArrowOverlay } from "@jsplumb/core"
 import {EdgePathEditor} from "@jsplumbtoolkit/connector-editors"
 import {FlowchartService} from "./app/flowchart.service"
+import {SpringLayout} from "@jsplumbtoolkit/layout-spring"
+import { OrthogonalConnector } from "@jsplumbtoolkit/connector-orthogonal"
+
+import * as OrthogonalConnectorEditor  from "@jsplumbtoolkit/connector-editors-orthogonal"
+OrthogonalConnectorEditor.initialize()
+
+const TARGET = "target"
+const SOURCE = "source"
+const START = "start"
+const SELECTABLE = "selectable"
+const CONNECTION = "connection"
+const OUTPUT = "output"
+const QUESTION = "question"
+const ACTION = "action"
 
 @Component({
   selector: 'jsplumb-flowchart',
@@ -42,11 +57,7 @@ import {FlowchartService} from "./app/flowchart.service"
           </ul>
         </div>
       </div>
-    
-    
-    
-    
-`
+  `
 })
 export class FlowchartComponent {
 
@@ -96,34 +107,34 @@ export class FlowchartComponent {
 
   view:AngularViewOptions = {
     nodes:{
-      "start":{
+      [START]:{
         component:StartNodeComponent
       },
-      "selectable": {
+      [SELECTABLE]: {
         events: {
           tap: (params:any) => {
             this.toggleSelection(params.node);
           }
         }
       },
-      "question":{
-        parent:"selectable",
+      [QUESTION]:{
+        parent:SELECTABLE,
         component:QuestionNodeComponent
       },
-      "output":{
-        parent:"selectable",
+      [OUTPUT]:{
+        parent:SELECTABLE,
         component:OutputNodeComponent
       },
-      "action":{
-        parent:"selectable",
+      [ACTION]:{
+        parent:SELECTABLE,
         component:ActionNodeComponent
       }
     },
     edges: {
-      "default": {
-        anchor:"AutoDefault",
-        endpoint:"Blank",
-        connector: { type:"Orthogonal", options:{ cornerRadius: 5 } },
+      [DEFAULT]: {
+        anchor:AnchorLocations.AutoDefault,
+        endpoint:BlankEndpoint.type,
+        connector: { type:OrthogonalConnector.type, options:{ cornerRadius: 5 } },
         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
         events: {
@@ -143,14 +154,14 @@ export class FlowchartComponent {
           }
         },
         overlays: [
-          { type:"Arrow", options:{ location: 1, width: 10, length: 10 }}
+          { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
         ]
       },
-      "connection":{
-        parent:"default",
+      [CONNECTION]:{
+        parent:DEFAULT,
         overlays:[
           {
-            type: "Label",
+            type: LabelOverlay.type,
             options: {
               label: "${label}",
               events: {
@@ -164,23 +175,23 @@ export class FlowchartComponent {
       }
     },
     ports: {
-      "start": {
-        endpoint: "Blank",
-        anchor: "Continuous",
+      [START]: {
+        endpoint: BlankEndpoint.type,
+        anchor: AnchorLocations.Continuous,
         uniqueEndpoint: true,
-        edgeType: "default"
+        edgeType: DEFAULT
       },
-      "source": {
-        endpoint: "Blank",
+      [SOURCE]: {
+        endpoint: BlankEndpoint.type,
         paintStyle: {fill: "#84acb3"},
-        anchor: "AutoDefault",
+        anchor: AnchorLocations.AutoDefault,
         maxConnections: -1,
-        edgeType: "connection"
+        edgeType: CONNECTION
       },
-      "target": {
+      [TARGET]: {
         maxConnections: -1,
-        endpoint: "Blank",
-        anchor: "AutoDefault",
+        endpoint: BlankEndpoint.type,
+        anchor: AnchorLocations.AutoDefault,
         paintStyle: {fill: "#84acb3"},
         isTarget: true
       }
@@ -189,15 +200,15 @@ export class FlowchartComponent {
 
   renderParams = {
     layout:{
-      type:"Spring"
+      type:SpringLayout.type
     },
     events: {
-      "edge:add":(params:any) => {
+      [EVENT_EDGE_ADDED]:(params:any) => {
         if (params.addedByMouse) {
           this.editLabel(params.edge);
         }
       },
-      canvasClick:(params:any) => {
+      [EVENT_CANVAS_CLICK]:(params:any) => {
         this.pathEditor.stopEditing()
       }
     },
