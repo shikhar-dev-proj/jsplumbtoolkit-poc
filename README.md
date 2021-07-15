@@ -40,7 +40,6 @@ This page gives you an in-depth look at how the application is put together.
     "jsplumbtoolkit-demo-support": "file:../../jsplumbtoolkit-demo-support.tgz",
     "jsplumbtoolkit-drop": "file:../../jsplumbtoolkit-drop.tgz",
     "jsplumbtoolkit-syntax-highlighter": "file:../../jsplumbtoolkit-syntax-highlighter.tgz",
-    "jsplumbtoolkit-undo-redo": "file:../../jsplumbtoolkit-undo-redo.tgz",
     "jsplumbtoolkit-editable-connectors": "file:../../jsplumbtoolkit-editable-connectors.tgz",
     "core-js": "^2.4.1",
     "rxjs": "^6.5.3",
@@ -74,7 +73,6 @@ There are seven entries specific to jsPlumb:
   "jsplumbtoolkit-demo-support": "file:./jsplumbtoolkit-demo-support.tgz",  // support code for toolkit demos
   "jsplumbtoolkit-drop": "file:./jsplumbtoolkit-drop.tgz",                  // drag/drop manager
   "jsplumbtoolkit-syntax-highlighter": "file:./jsplumbtoolkit-syntax-highlighter.tgz", // used to show the current dataset
-  "jsplumbtoolkit-undo-redo": "file:./jsplumbtoolkit-undo-redo.tgz",        // undo/redo manager
   "jsplumbtoolkit-editable-connectors": "file:./jsplumbtoolkit-editable-connectors.tgz", // draggable flowchart connectors
 }
 ```
@@ -1003,7 +1001,7 @@ The controls component also provides the "zoom to fit" button (as shown in the c
 
 ##### Undo/redo
 
-The controls component attaches an [Undo/redo manager](https://docs.jsplumbtoolkit.com/toolkit/current/articles/undo-redo) to the underlying Toolkit instance, to offer undo/redo support for node, group, port and edge additions and/or removals.
+The controls component uses the Toolkit's built in undo/redo methods to offer undo/redo support for node, group, port and edge additions and/or removals.
  
 
 [TOP](#top)
@@ -1079,7 +1077,6 @@ of this method is not in the scope of this document, but you can find the code i
 ```
 import { Input, Component, ElementRef } from '@angular/core';
 
-import {jsPlumbToolkitUndoRedo} from "jsplumbtoolkit-undo-redo";
 import {jsPlumb, Surface} from "jsplumbtoolkit";
 import {jsPlumbService} from "jsplumbtoolkit-angular";
 
