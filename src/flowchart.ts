@@ -1,18 +1,32 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core'
 
-import { jsPlumbSurfaceComponent, AngularViewOptions } from "@jsplumbtoolkit/angular";
+import { jsPlumbSurfaceComponent, AngularViewOptions, BrowserUIAngular } from "@jsplumbtoolkit/browser-ui-angular"
 
-import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from "./components";
+import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from "./components"
 
-import {BrowserUI, Surface, EVENT_CANVAS_CLICK} from "@jsplumbtoolkit/browser-ui"
+import { Surface, EVENT_CANVAS_CLICK, EVENT_CLICK } from "@jsplumbtoolkit/browser-ui"
+
+import {
+  Connection,
+  BlankEndpoint,
+  DEFAULT,
+  AnchorLocations,
+  LabelOverlay,
+  ArrowOverlay
+} from "@jsplumb/core"
+
 import {Edge, EVENT_EDGE_ADDED} from "@jsplumbtoolkit/core"
-import { Connection, BlankEndpoint, DEFAULT, AnchorLocations, LabelOverlay, ArrowOverlay } from "@jsplumb/core"
-import {EdgePathEditor} from "@jsplumbtoolkit/connector-editors"
-import {FlowchartService} from "./app/flowchart.service"
-import {SpringLayout} from "@jsplumbtoolkit/layout-spring"
-import { OrthogonalConnector } from "@jsplumbtoolkit/connector-orthogonal"
 
+import {EdgePathEditor} from "@jsplumbtoolkit/connector-editors"
+
+import {SpringLayout} from "@jsplumbtoolkit/layout-spring"
+import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
+
+import { OrthogonalConnector } from "@jsplumbtoolkit/connector-orthogonal"
 import * as OrthogonalConnectorEditor  from "@jsplumbtoolkit/connector-editors-orthogonal"
+
+import {FlowchartService} from "./app/flowchart.service"
+
 OrthogonalConnectorEditor.initialize()
 
 const TARGET = "target"
@@ -63,7 +77,7 @@ export class FlowchartComponent {
 
   @ViewChild(jsPlumbSurfaceComponent) surfaceComponent:jsPlumbSurfaceComponent;
 
-  toolkit:BrowserUI
+  toolkit:BrowserUIAngular
   surface:Surface
   pathEditor:EdgePathEditor
 
@@ -81,7 +95,7 @@ export class FlowchartComponent {
     this.surfaceId = "flowchartSurface";
   }
 
-  getToolkit():BrowserUI {
+  getToolkit():BrowserUIAngular {
     return this.toolkit;
   }
 
@@ -138,7 +152,7 @@ export class FlowchartComponent {
         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
         events: {
-          click:(p) => {
+          [EVENT_CLICK]:(p) => {
             this.pathEditor.startEditing(p.edge, {
               deleteButton:true,
               onMaybeDelete:(edge:Edge, conn:Connection, doDelete:Function) => {
@@ -165,7 +179,7 @@ export class FlowchartComponent {
             options: {
               label: "${label}",
               events: {
-                click: (params: any) => {
+                [EVENT_CLICK]: (params: {edge:Edge}) => {
                   this.editLabel(params.edge);
                 }
               }
@@ -205,7 +219,7 @@ export class FlowchartComponent {
     events: {
       [EVENT_EDGE_ADDED]:(params:any) => {
         if (params.addedByMouse) {
-          this.editLabel(params.edge);
+          this.editLabel(params.edge)
         }
       },
       [EVENT_CANVAS_CLICK]:(params:any) => {
@@ -216,7 +230,10 @@ export class FlowchartComponent {
     dragOptions: {
       filter: ".jtk-draw-handle, .node-action, .node-action i"
     },
-    zoomToFit:true
+    zoomToFit:true,
+    plugins:[
+      LassoPlugin.type
+    ]
   }
 
   dataGenerator(el:Element) {

@@ -3,9 +3,8 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FlowchartComponent } from "./flowchart";
 import {DatasetComponent } from "./dataset";
 
-import { jsPlumbService } from "@jsplumbtoolkit/angular"
-import {BrowserUI} from "@jsplumbtoolkit/browser-ui"
-import { uuid } from "@jsplumb/util"
+import { BrowserUIAngular, jsPlumbService } from "@jsplumbtoolkit/browser-ui-angular"
+import { uuid } from "@jsplumbtoolkit/core"
 import {FlowchartService} from "./app/flowchart.service"
 
 @Component({
@@ -24,7 +23,7 @@ export class AppComponent {
   @ViewChild(DatasetComponent) dataset:DatasetComponent;
 
   toolkitId:string
-  toolkit:BrowserUI
+  toolkit:BrowserUIAngular
 
   constructor(private $jsplumb:jsPlumbService, private elementRef:ElementRef, private flowchartService:FlowchartService) {
     this.toolkitId = this.elementRef.nativeElement.getAttribute("toolkitId");
