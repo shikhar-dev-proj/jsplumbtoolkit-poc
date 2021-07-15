@@ -1,13 +1,13 @@
-import {Component, ElementRef, Input} from '@angular/core'
+import {AfterViewInit, Component, ElementRef, Input} from '@angular/core'
 
 import {
   EVENT_CANVAS_CLICK,
   EVENT_SURFACE_MODE_CHANGED,
   Surface,
   SurfaceMode
-} from "@jsplumbtoolkit/browser-ui"
-import { FALSE, TRUE } from "@jsplumb/core"
-import {jsPlumbService} from "@jsplumbtoolkit/browser-ui-angular"
+} from '@jsplumbtoolkit/browser-ui'
+import { FALSE, TRUE } from '@jsplumb/core'
+import {jsPlumbService} from '@jsplumbtoolkit/browser-ui-angular'
 import {EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from '@jsplumbtoolkit/core'
 
 // --------------------------------------- CONTROLS COMPONENT ------------------------------------------------------------------
@@ -18,8 +18,8 @@ import {EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from '@jsplumbtoolkit/core'
 
 
 @Component({
-  selector:"jsplumb-controls",
-  template:`<div class="controls">
+  selector: 'jsplumb-controls',
+  template: `<div class="controls">
               <i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode" (click)="panMode()"></i>
               <i class="fa fa-pencil" mode="select" title="Select Mode" (click)="selectMode()"></i>
               <i class="fa fa-home" reset title="Zoom To Fit" (click)="zoomToFit()"></i>
@@ -28,16 +28,16 @@ import {EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from '@jsplumbtoolkit/core'
               <i class="fa fa-times" title="Clear flowchart" (click)="clear()"></i>
           </div>`
 })
-export class ControlsComponent {
+export class ControlsComponent implements AfterViewInit {
 
-  @Input() surfaceId: string;
+  @Input() surfaceId: string
 
-  surface:Surface;
+  surface: Surface
 
-  constructor(private el: ElementRef, private $jsplumb:jsPlumbService) { }
+  constructor(private el: ElementRef, private $jsplumb: jsPlumbService) { }
 
-  getNativeElement(component:any) {
-    return (component.nativeElement || component._nativeElement || component.location.nativeElement).childNodes[0];
+  getNativeElement(component: any) {
+    return (component.nativeElement || component._nativeElement || component.location.nativeElement).childNodes[0]
   }
 
   panMode() {
@@ -62,19 +62,19 @@ export class ControlsComponent {
   }
 
   ngAfterViewInit() {
-    this.$jsplumb.getSurface(this.surfaceId, (s:Surface) => {
+    this.$jsplumb.getSurface(this.surfaceId, (s: Surface) => {
 
-      this.surface = s;
-      this.surface.bind(EVENT_SURFACE_MODE_CHANGED, (mode:String) => {
-        let controls = this.getNativeElement(this.el);
-        this.surface.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
-        this.surface.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
+      this.surface = s
+      this.surface.bind(EVENT_SURFACE_MODE_CHANGED, (mode: string) => {
+        const controls = this.getNativeElement(this.el)
+        this.surface.removeClass(controls.querySelectorAll('[mode]'), 'selected-mode')
+        this.surface.addClass(controls.querySelectorAll(`[mode='${mode}']`), 'selected-mode')
       });
 
-      this.surface.toolkitInstance.bind(EVENT_UNDOREDO_UPDATE, (state:UndoRedoUpdateParams) => {
-        let controls = this.getNativeElement(this.el);
-        controls.setAttribute("can-undo", state.undoCount > 0 ? TRUE : FALSE)
-        controls.setAttribute("can-redo", state.redoCount > 0 ? TRUE : FALSE)
+      this.surface.toolkitInstance.bind(EVENT_UNDOREDO_UPDATE, (state: UndoRedoUpdateParams) => {
+        const controls = this.getNativeElement(this.el)
+        controls.setAttribute('can-undo', state.undoCount > 0 ? TRUE : FALSE)
+        controls.setAttribute('can-redo', state.redoCount > 0 ? TRUE : FALSE)
       })
 
       this.surface.bind(EVENT_CANVAS_CLICK, () => this.surface.toolkitInstance.clearSelection())
@@ -84,7 +84,7 @@ export class ControlsComponent {
 
   clear() {
     const t = this.surface.toolkitInstance
-    if (t.getNodeCount() === 0 || confirm("Clear flowchart?")) {
+    if (t.getNodeCount() === 0 || confirm('Clear flowchart?')) {
       t.clear()
     }
   }

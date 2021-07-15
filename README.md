@@ -230,13 +230,13 @@ current contents of the dataset in syntax highlighted json. We use Angular routi
 In the HTML file, the demo component is declared with a single element:
 
 ```html
-<jsplumb-demo>Loading Flowchart Builder...</jsplumb-demo>
+<app-demo>Loading Flowchart Builder...</app-demo>
 ```
 
 <a name="demoComponentTemplate"></a>
 #### Template
 
-The `jsplumb-demo` component is created inside the file `src/app.component.ts`. Its template looks like this:
+The `app-demo` component is created inside the file `src/app.component.ts`. Its template looks like this:
 
 ```html
 <nav>
