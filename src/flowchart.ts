@@ -9,13 +9,16 @@ import { Surface, EVENT_CANVAS_CLICK, EVENT_CLICK } from '@jsplumbtoolkit/browse
 import {
   Connection,
   BlankEndpoint,
-  DEFAULT,
-  AnchorLocations,
   LabelOverlay,
   ArrowOverlay
 } from '@jsplumb/core'
 
-import {Edge, EVENT_EDGE_ADDED, Vertex} from '@jsplumbtoolkit/core'
+import {
+  DEFAULT,
+  AnchorLocations
+} from "@jsplumb/common"
+
+import {Edge, Vertex} from '@jsplumbtoolkit/core'
 
 import {EdgePathEditor} from '@jsplumbtoolkit/connector-editors'
 
@@ -35,7 +38,7 @@ const TARGET = 'target'
 const SOURCE = 'source'
 const START = 'start'
 const SELECTABLE = 'selectable'
-const CONNECTION = 'connection'
+const RESPONSE = 'response'
 const OUTPUT = 'output'
 const QUESTION = 'question'
 const ACTION = 'action'
@@ -144,7 +147,7 @@ export class FlowchartComponent implements AfterViewInit {
           { type: ArrowOverlay.type, options: { location: 1, width: 10, length: 10 }}
         ]
       },
-      [CONNECTION]: {
+      [RESPONSE]: {
         parent: DEFAULT,
         overlays: [
           {
@@ -173,7 +176,7 @@ export class FlowchartComponent implements AfterViewInit {
         paintStyle: {fill: '#84acb3'},
         anchor: AnchorLocations.AutoDefault,
         maxConnections: -1,
-        edgeType: CONNECTION
+        edgeType: RESPONSE
       },
       [TARGET]: {
         maxConnections: -1,
@@ -190,11 +193,6 @@ export class FlowchartComponent implements AfterViewInit {
       type: SpringLayout.type
     },
     events: {
-      [EVENT_EDGE_ADDED]: (params: {addedByMouse?: boolean, edge: Edge}) => {
-        if (params.addedByMouse) {
-          this.editLabel(params.edge)
-        }
-      },
       [EVENT_CANVAS_CLICK]: (params: any) => {
         this.pathEditor.stopEditing()
       }
@@ -227,16 +225,10 @@ export class FlowchartComponent implements AfterViewInit {
     this.toolkit.removeEdge(edge);
   }
 
-  editLabel(edge: any) {
-    this.flowchartService.showDialog({
-      id: 'dlgText',
-      data: {
-        text: edge.data.label || ''
-      },
-      onOK: (data: any) => {
-        this.toolkit.updateEdge(edge, { label: data.text });
-      }
-    });
+  editLabel(edge: Edge) {
+    this.flowchartService.showEdgeLabelDialog(edge.data, (data: any) => {
+      this.toolkit.updateEdge(edge, { label: data.label });
+    }, () => null)
   }
 
   dataGenerator(el: Element) {

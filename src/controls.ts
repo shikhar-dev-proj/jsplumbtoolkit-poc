@@ -6,7 +6,7 @@ import {
   Surface,
   SurfaceMode
 } from '@jsplumbtoolkit/browser-ui'
-import { FALSE, TRUE } from '@jsplumb/core'
+import { FALSE, TRUE } from '@jsplumb/common'
 import {jsPlumbService} from '@jsplumbtoolkit/browser-ui-angular'
 import {EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from '@jsplumbtoolkit/core'
 

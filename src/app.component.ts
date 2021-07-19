@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core'
 
 import {FlowchartComponent } from './flowchart';
 import {DatasetComponent } from './dataset';
@@ -17,7 +17,7 @@ import {FlowchartService} from './app/flowchart.service'
           <router-outlet></router-outlet>
     `
 })
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild(FlowchartComponent) flowchart: FlowchartComponent;
   @ViewChild(DatasetComponent) dataset: DatasetComponent;
@@ -26,7 +26,7 @@ export class AppComponent {
   toolkit: BrowserUIAngular
 
   toolkitParams: any = {
-    nodeFactory: (type: string, data: any, callback: Function) => {
+    nodeFactory: (type: string, data: any, callback: Function, abort?: Function) => {
       this.flowchartService.showDialog({
         id: 'dlgText',
         title: 'Enter ' + type + ' name:',
@@ -50,6 +50,9 @@ export class AppComponent {
     },
     beforeStartConnect: (node: any, edgeType: string) => {
       return { label: '...' };
+    },
+    edgeFactory: (type: string, data: any, continueCallback: Function, abortCallback: Function) => {
+      this.flowchartService.showEdgeLabelDialog(data, continueCallback, abortCallback)
     }
   }
 
