@@ -16,7 +16,7 @@ import {
 import {
   DEFAULT,
   AnchorLocations
-} from "@jsplumb/common"
+} from '@jsplumb/common'
 
 import {Edge, Vertex} from '@jsplumbtoolkit/core'
 

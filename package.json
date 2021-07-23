@@ -20,8 +20,6 @@
     "@angular/platform-browser": "^12.1.2",
     "@angular/platform-browser-dynamic": "^12.1.2",
     "@angular/router": "^12.1.2",
-    "@jsplumb/json-syntax-highlighter": "^1.0.4",
-    "@jsplumb/toolkit-demo-support": "^1.0.0",
     "@jsplumbtoolkit/browser-ui-angular": "^5.0.0-RC1",
     "@jsplumbtoolkit/browser-ui-angular-drop": "^5.0.0-RC1",
     "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.0.0-RC1",

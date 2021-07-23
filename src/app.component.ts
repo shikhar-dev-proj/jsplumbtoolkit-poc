@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core'
 
 import {FlowchartComponent } from './flowchart';
-import {DatasetComponent } from './dataset';
 
 import { BrowserUIAngular, jsPlumbService } from '@jsplumbtoolkit/browser-ui-angular'
 import { uuid } from '@jsplumbtoolkit/core'
@@ -10,17 +9,12 @@ import {FlowchartService} from './app/flowchart.service'
 @Component({
     selector: 'app-demo',
     template: `
-          <nav>
-              <a routerLink="/home" style="cursor:pointer;" routerLinkActive="active">Flowchart</a>
-              <a routerLink="/data" style="cursor:pointer;" routerLinkActive="active">Dataset</a>
-          </nav>
-          <router-outlet></router-outlet>
+          <app-flowchart></app-flowchart>
     `
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild(FlowchartComponent) flowchart: FlowchartComponent;
-  @ViewChild(DatasetComponent) dataset: DatasetComponent;
 
   toolkitId: string
   toolkit: BrowserUIAngular

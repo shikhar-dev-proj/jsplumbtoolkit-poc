@@ -1,6 +1,5 @@
-@import "../node_modules/@jsplumb/json-syntax-highlighter/jsplumbtoolkit-syntax-highlighter.css";
 @import "../node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit.css";
-@import "../node_modules/@jsplumb/toolkit-demo-support/jsplumbtoolkit-demo-support.css";
+@import "../node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit-demo-support.css";
 @import "../node_modules/@jsplumbtoolkit/connector-editors/css/jsplumbtoolkit-connector-editors.css";
 @import "../node_modules/@jsplumbtoolkit/dialogs/css/jsplumbtoolkit-dialogs.css";
 
@@ -22,10 +21,6 @@ app-demo {
   position:relative;
 }
 
-jsplumb-dataset {
-  flex-grow:1;
-}
-
 app-flowchart {
   width:100%;
   display:flex;
@@ -34,12 +29,12 @@ app-flowchart {
 }
 
 @media screen and (max-width:850px) {
-  jsplumb-flowchart {
+  app-flowchart {
     flex-direction: column;
   }
 }
 
-jsplumb-surface{
+jsplumb-surface {
     flex:1;
 }
 
