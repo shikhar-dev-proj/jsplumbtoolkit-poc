@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.toolkit.load({ url: 'data/copyright.json' });
+    this.toolkit.load({ url: 'assets/copyright.json' });
   }
 
 }
