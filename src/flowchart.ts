@@ -4,19 +4,18 @@ import { jsPlumbSurfaceComponent, AngularViewOptions, BrowserUIAngular } from '@
 
 import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from './components'
 
-import { Surface, EVENT_CANVAS_CLICK, EVENT_CLICK } from '@jsplumbtoolkit/browser-ui'
-
 import {
+  Surface,
+  EVENT_CANVAS_CLICK,
+  EVENT_CLICK,
   Connection,
   BlankEndpoint,
   LabelOverlay,
-  ArrowOverlay
-} from '@jsplumb/core'
-
-import {
+  ArrowOverlay,
   DEFAULT,
   AnchorLocations
-} from '@jsplumb/common'
+} from '@jsplumbtoolkit/browser-ui'
+
 
 import {Edge, Vertex} from '@jsplumbtoolkit/core'
 

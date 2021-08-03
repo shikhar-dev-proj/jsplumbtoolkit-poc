@@ -4,9 +4,9 @@ import {
   EVENT_CANVAS_CLICK,
   EVENT_SURFACE_MODE_CHANGED,
   Surface,
-  SurfaceMode
+  SurfaceMode,
+  FALSE, TRUE
 } from '@jsplumbtoolkit/browser-ui'
-import { FALSE, TRUE } from '@jsplumb/common'
 import {jsPlumbService} from '@jsplumbtoolkit/browser-ui-angular'
 import {EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from '@jsplumbtoolkit/core'
 
