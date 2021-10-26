@@ -58,7 +58,7 @@ const ACTION = 'action'
              selector="div"
              surfaceId="flowchartSurface"
              [dataGenerator]="dataGenerator">
-          <div *ngFor="let nodeType of nodeTypes" class="sidebar-item" [attr.data-node-type]="nodeType.type" title="Drag to add new" [attr.jtk-width]="nodeType.w" [attr.jtk-height]="nodeType.h">{{nodeType.label}}</div>
+          <div *ngFor="let nodeType of nodeTypes" class="sidebar-item" [attr.data-node-type]="nodeType.type" title="Drag to add new" [attr.data-width]="nodeType.w" [attr.data-height]="nodeType.h">{{nodeType.label}}</div>
         </div>
         <div class="description">
           <p>
@@ -89,9 +89,9 @@ export class FlowchartComponent implements AfterViewInit {
   surfaceId: string;
 
   nodeTypes = [
-    { label: 'Question', type: 'question', w: 120, h: 120 },
-    { label: 'Action', type: 'action', w: 120, h: 120 },
-    { label: 'Output', type: 'output', w: 120, h: 90 }
+    { label: 'Question', type: 'question', w: 240, h: 220 },
+    { label: 'Action', type: 'action', w: 240, h: 160 },
+    { label: 'Output', type: 'output', w: 240, h: 160 }
   ]
 
   view: AngularViewOptions = {
@@ -204,7 +204,16 @@ export class FlowchartComponent implements AfterViewInit {
     plugins: [
       LassoPlugin.type,
       DrawingToolsPlugin.type
-    ]
+    ],
+    grid: {
+      size: {
+        w: 20,
+        h: 20
+      }
+    },
+    magnetize: {
+      afterDrag: true
+    }
   }
 
   constructor(private flowchartService: FlowchartService) {
@@ -233,8 +242,8 @@ export class FlowchartComponent implements AfterViewInit {
   dataGenerator(el: Element) {
     return {
       type: el.getAttribute('data-node-type'),
-      w: parseInt(el.getAttribute('jtk-width'), 10),
-      h: parseInt(el.getAttribute('jtk-height'), 10)
+      w: parseInt(el.getAttribute('data-width'), 10),
+      h: parseInt(el.getAttribute('data-height'), 10)
     }
   }
 
