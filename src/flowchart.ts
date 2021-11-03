@@ -1,15 +1,49 @@
-import {Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core'
 
-import {Connection, Dialogs, DrawingTools, Edge, jsPlumbToolkit, Surface} from "jsplumbtoolkit";
+import { jsPlumbSurfaceComponent, AngularViewOptions, BrowserUIAngular } from '@jsplumbtoolkit/browser-ui-angular'
 
-import { jsPlumbSurfaceComponent, AngularViewOptions } from "jsplumbtoolkit-angular";
+import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from './components'
 
-import { ActionNodeComponent, QuestionNodeComponent, OutputNodeComponent, StartNodeComponent } from "./components";
+import {
+  Surface,
+  EVENT_CANVAS_CLICK,
+  EVENT_CLICK,
+  Connection,
+  BlankEndpoint,
+  LabelOverlay,
+  ArrowOverlay,
+  DEFAULT,
+  AnchorLocations
+} from '@jsplumbtoolkit/browser-ui'
 
-import "jsplumbtoolkit-editable-connectors";
+
+import {Edge, Vertex} from '@jsplumbtoolkit/core'
+
+import {EdgePathEditor} from '@jsplumbtoolkit/connector-editors'
+
+import {SpringLayout} from '@jsplumbtoolkit/layout-spring'
+import {LassoPlugin} from '@jsplumbtoolkit/browser-ui-plugin-lasso'
+import {DrawingToolsPlugin} from '@jsplumbtoolkit/browser-ui-plugin-drawing-tools'
+
+import { OrthogonalConnector } from '@jsplumbtoolkit/connector-orthogonal'
+import * as OrthogonalConnectorEditor from '@jsplumbtoolkit/connector-editors-orthogonal'
+
+import {FlowchartService} from './app/flowchart.service'
+
+// initialize the orthogonal connector editor. This registers it on the Surface.
+OrthogonalConnectorEditor.initialize()
+
+const TARGET = 'target'
+const SOURCE = 'source'
+const START = 'start'
+const SELECTABLE = 'selectable'
+const RESPONSE = 'response'
+const OUTPUT = 'output'
+const QUESTION = 'question'
+const ACTION = 'action'
 
 @Component({
-  selector: 'jsplumb-flowchart',
+  selector: 'app-flowchart',
   template: `
 
     <div class="jtk-demo-canvas">
@@ -24,7 +58,7 @@ import "jsplumbtoolkit-editable-connectors";
              selector="div"
              surfaceId="flowchartSurface"
              [dataGenerator]="dataGenerator">
-          <div *ngFor="let nodeType of nodeTypes" class="sidebar-item" [attr.data-node-type]="nodeType.type" title="Drag to add new" [attr.jtk-width]="nodeType.w" [attr.jtk-height]="nodeType.h">{{nodeType.label}}</div>
+          <div *ngFor="let nodeType of nodeTypes" class="sidebar-item" [attr.data-node-type]="nodeType.type" title="Drag to add new" [attr.data-width]="nodeType.w" [attr.data-height]="nodeType.h">{{nodeType.label}}</div>
         </div>
         <div class="description">
           <p>
@@ -41,191 +75,182 @@ import "jsplumbtoolkit-editable-connectors";
           </ul>
         </div>
       </div>
-    
-    
-    
-    
-`
+  `
 })
-export class FlowchartComponent {
+export class FlowchartComponent implements AfterViewInit {
 
-  @ViewChild(jsPlumbSurfaceComponent) surfaceComponent:jsPlumbSurfaceComponent;
+  @ViewChild(jsPlumbSurfaceComponent) surfaceComponent: jsPlumbSurfaceComponent;
 
-  toolkit:jsPlumbToolkit;
-  surface:Surface;
+  toolkit: BrowserUIAngular
+  surface: Surface
+  pathEditor: EdgePathEditor
 
-  toolkitId:string;
-  surfaceId:string;
+  toolkitId: string;
+  surfaceId: string;
 
   nodeTypes = [
-    { label: "Question", type: "question", w:120, h:120 },
-    { label: "Action", type: "action", w:120, h:120 },
-    { label: "Output", type: "output", w:120, h:90 }
-  ];
+    { label: 'Question', type: 'question', w: 240, h: 220 },
+    { label: 'Action', type: 'action', w: 240, h: 160 },
+    { label: 'Output', type: 'output', w: 240, h: 160 }
+  ]
 
-  constructor() {
-    this.toolkitId = "flowchart";
-    this.surfaceId = "flowchartSurface";
-  }
-
-  getToolkit():jsPlumbToolkit {
-    return this.toolkit;
-  }
-
-  toggleSelection(node:any) {
-    this.toolkit.toggleSelection(node);
-  }
-
-  removeEdge(edge:any) {
-    this.toolkit.removeEdge(edge);
-  }
-
-  editLabel(edge:any) {
-    Dialogs.show({
-      id: "dlgText",
-      data: {
-        text: edge.data.label || ""
+  view: AngularViewOptions = {
+    nodes: {
+      [START]: {
+        component: StartNodeComponent
       },
-      onOK: (data:any) => {
-        this.toolkit.updateEdge(edge, { label:data.text });
-      }
-    });
-  }
-
-  view:AngularViewOptions = {
-    nodes:{
-      "start":{
-        component:StartNodeComponent
-      },
-      "selectable": {
+      [SELECTABLE]: {
         events: {
-          tap: (params:any) => {
-            this.toggleSelection(params.node);
+          tap: (params: {obj: Vertex}) => {
+            this.toggleSelection(params.obj)
           }
         }
       },
-      "question":{
-        parent:"selectable",
-        component:QuestionNodeComponent
+      [QUESTION]: {
+        parent: SELECTABLE,
+        component: QuestionNodeComponent
       },
-      "output":{
-        parent:"selectable",
-        component:OutputNodeComponent
+      [OUTPUT]: {
+        parent: SELECTABLE,
+        component: OutputNodeComponent
       },
-      "action":{
-        parent:"selectable",
-        component:ActionNodeComponent
+      [ACTION]: {
+        parent: SELECTABLE,
+        component: ActionNodeComponent
       }
     },
     edges: {
-      "default": {
-        anchor:"AutoDefault",
-        endpoint:"Blank",
-        connector: ["EditableFlowchart", { cornerRadius: 5 } ],
-        paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
-        hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
+      [DEFAULT]: {
+        anchor: AnchorLocations.AutoDefault,
+        endpoint: BlankEndpoint.type,
+        connector: { type: OrthogonalConnector.type, options: { cornerRadius: 5 } },
+        paintStyle: { strokeWidth: 2, stroke: 'rgb(132, 172, 179)', outlineWidth: 3, outlineStroke: 'transparent' },	// 	paint style for this edge type.
+        hoverPaintStyle: { strokeWidth: 2, stroke: 'rgb(67,67,67)' }, // hover paint style for this edge type.
         events: {
-          click:(p) => {
-            (<any>this.surface).startEditing(p.edge, {
-              deleteButton:true,
-              onMaybeDelete:(edge:Edge, conn:Connection, doDelete:Function) => {
-                Dialogs.show({
-                  id: "dlgConfirm",
+          [EVENT_CLICK]: (p: {edge: Edge}) => {
+            this.pathEditor.startEditing(p.edge, {
+              deleteButton: true,
+              onMaybeDelete: (edge: Edge, conn: Connection, doDelete: Function) => {
+                this.flowchartService.showDialog({
+                  id: 'dlgConfirm',
                   data: {
-                    msg: "Delete Edge"
+                    msg: 'Delete Edge'
                   },
                   onOK: doDelete
                 });
               }
             });
           }
-
-
         },
         overlays: [
-          [ "Arrow", { location: 1, width: 10, length: 10 }]
+          { type: ArrowOverlay.type, options: { location: 1, width: 10, length: 10 }}
         ]
       },
-      "connection":{
-        parent:"default",
-        overlays:[
-          [
-            "Label", {
-            label: "${label}",
-            events:{
-              click:(params:any) => {
-                this.editLabel(params.edge);
+      [RESPONSE]: {
+        parent: DEFAULT,
+        overlays: [
+          {
+            type: LabelOverlay.type,
+            options: {
+              label: '${label}',
+              events: {
+                [EVENT_CLICK]: (params: {edge: Edge}) => {
+                  this.editLabel(params.edge)
+                }
               }
             }
           }
-          ]
         ]
       }
     },
     ports: {
-      "start": {
-        endpoint: "Blank",
-        anchor: "Continuous",
+      [START]: {
+        endpoint: BlankEndpoint.type,
+        anchor: AnchorLocations.Continuous,
         uniqueEndpoint: true,
-        edgeType: "default"
+        edgeType: DEFAULT
       },
-      "source": {
-        endpoint: "Blank",
-        paintStyle: {fill: "#84acb3"},
-        anchor: "AutoDefault",
+      [SOURCE]: {
+        endpoint: BlankEndpoint.type,
+        paintStyle: {fill: '#84acb3'},
+        anchor: AnchorLocations.AutoDefault,
         maxConnections: -1,
-        edgeType: "connection"
+        edgeType: RESPONSE
       },
-      "target": {
+      [TARGET]: {
         maxConnections: -1,
-        endpoint: "Blank",
-        anchor: "AutoDefault",
-        paintStyle: {fill: "#84acb3"},
+        endpoint: BlankEndpoint.type,
+        anchor: AnchorLocations.AutoDefault,
+        paintStyle: {fill: '#84acb3'},
         isTarget: true
       }
     }
-  };
+  }
 
   renderParams = {
-    layout:{
-      type:"Spring"
+    layout: {
+      type: SpringLayout.type
     },
     events: {
-      edgeAdded:(params:any) => {
-        if (params.addedByMouse) {
-          this.editLabel(params.edge);
-        }
-      },
-      canvasClick:(params:any) => {
-        (<any>this.surface).stopEditing();
+      [EVENT_CANVAS_CLICK]: (params: any) => {
+        this.pathEditor.stopEditing()
       }
     },
-    consumeRightClick:false,
+    consumeRightClick: false,
     dragOptions: {
-      filter: ".jtk-draw-handle, .node-action, .node-action i"
+      filter: '.jtk-draw-handle, .node-action, .node-action i'
     },
-    zoomToFit:true
-  };
+    zoomToFit: true,
+    plugins: [
+      LassoPlugin.type,
+      DrawingToolsPlugin.type
+    ],
+    grid: {
+      size: {
+        w: 20,
+        h: 20
+      }
+    },
+    magnetize: {
+      afterDrag: true
+    }
+  }
 
-  dataGenerator(el:Element) {
+  constructor(private flowchartService: FlowchartService) {
+    this.toolkitId = 'flowchart';
+    this.surfaceId = 'flowchartSurface';
+  }
+
+  getToolkit(): BrowserUIAngular {
+    return this.toolkit;
+  }
+
+  toggleSelection(obj: Vertex) {
+    this.toolkit.toggleSelection(obj)
+  }
+
+  removeEdge(edge: any) {
+    this.toolkit.removeEdge(edge);
+  }
+
+  editLabel(edge: Edge) {
+    this.flowchartService.showEdgeLabelDialog(edge.data, (data: any) => {
+      this.toolkit.updateEdge(edge, { label: data.label });
+    }, () => null)
+  }
+
+  dataGenerator(el: Element) {
     return {
-      type:el.getAttribute("data-node-type"),
-      w:parseInt(el.getAttribute("jtk-width"), 10),
-      h:parseInt(el.getAttribute("jtk-height"), 10)
+      type: el.getAttribute('data-node-type'),
+      w: parseInt(el.getAttribute('data-width'), 10),
+      h: parseInt(el.getAttribute('data-height'), 10)
     }
   }
 
   ngAfterViewInit() {
     this.surface = this.surfaceComponent.surface;
-    this.toolkit = this.surface.getToolkit()
-
-    new DrawingTools({
-      renderer: this.surface
-    });
-  }
-
-  ngOnDestroy() {
-    console.log("flowchart being destroyed");
+    this.toolkit = this.surface.toolkitInstance
+    this.pathEditor = new EdgePathEditor(this.surface)
   }
 
 }

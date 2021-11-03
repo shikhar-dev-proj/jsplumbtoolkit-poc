@@ -5,8 +5,11 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": [ "es2015", "dom" ]
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "target": "es2018"
   }
 }
