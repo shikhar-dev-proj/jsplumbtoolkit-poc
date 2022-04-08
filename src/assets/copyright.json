@@ -1,399 +1,148 @@
 {
   "nodes": [
-    {
-      "id": "1",
-      "type": "action",
-      "text": "Select Material",
-      "left": -300,
-      "top": -480,
-      "w": 240,
-      "h": 160
-    },
-    {
-      "id": "2",
-      "type": "question",
-      "text": "Is it in the public domain?",
-      "left": -300,
-      "top": -240,
-      "w": 240,
-      "h": 220
-    },
-    {
-      "id": "3",
-      "type": "question",
-      "text": "Is it Creative Commons?",
-      "left": 60,
-      "top": -240,
-      "w": 240,
-      "h": 220
-    },
-    {
-      "id": "4",
-      "type": "question",
-      "text": "Is it available from the publisher?",
-      "left": 420,
-      "top": -240,
-      "w": 240,
-      "h": 220
-    },
-    {
-      "id": "5",
-      "type": "question",
-      "text": "Can it be linked online?",
-      "left": 220,
-      "top": 180,
-      "w": 240,
-      "h": 220
-    },
-    {
-      "id": "6",
-      "type": "action",
-      "text": "Provide link to material",
-      "left": -160,
-      "top": 400,
-      "w": 300,
-      "h": 160
-    },
-    {
-      "id": "7",
-      "type": "action",
-      "text": "Send request to IPO for usage permission",
-      "left": 520,
-      "top": 200,
-      "w": 300,
-      "h": 180
-    },
-    {
-      "id": "8",
-      "type": "action",
-      "text": "Review license and comply with terms",
-      "left": -160,
-      "top": 60,
-      "w": 300,
-      "h": 160
-    },
-    {
-      "id": "9",
-      "type": "question",
-      "text": "Can IPO identify the rights holder?",
-      "left": 520,
-      "top": 460,
-      "w": 300,
-      "h": 180
-    },
-    {
-      "id": "10",
-      "type": "output",
-      "text": "Copyright cleared",
-      "left": -360,
-      "top": 600,
-      "w": 280,
-      "h": 160
-    }
+      {
+          "type": "customstart",
+          "id": "eddefa30-1eb5-4ce9-8564-fcba158fc2d8"
+      },
+      {
+          "type": "entrycondition",
+          "id": "9b6701d8-5013-4f35-8d01-a94b906ba6b6",
+          "conditions": [
+              "Performed an Event",
+              "User attribute"
+          ],
+          "isTailConnected": true
+      },
+      {
+          "type": "delay",
+          "id": "ea8865ac-f05b-4d8d-8113-5d80603c3b3d",
+          "isTailConnected": true
+      },
+      {
+          "type": "multibranchsplit",
+          "id": "a90f4af1-538f-448f-b531-b7a5a176817a"
+      },
+      {
+          "type": "condition",
+          "conditions": [
+              "High Value"
+          ],
+          "id": "a52a0ebb-8040-4d7d-8ef8-34e142e263bd",
+          "isTailConnected": true
+      },
+      {
+          "type": "condition",
+          "conditions": [
+              "Medium Value"
+          ],
+          "id": "25d4d89d-298a-4434-9029-1d411b8bf2fb",
+          "isTailConnected": true
+      },
+      {
+          "type": "condition",
+          "conditions": [
+              "Low Value"
+          ],
+          "id": "373b6f89-56dc-42a8-98f3-d78d9e24dd6a",
+          "isTailConnected": true
+      },
+      {
+          "type": "destination",
+          "destinations": [
+              "Facebook"
+          ],
+          "id": "6ba11f3e-77d8-409f-8968-b7a4b54affe1"
+      },
+      {
+          "type": "destination",
+          "destinations": [
+              "Facebook"
+          ],
+          "id": "40f5ee3c-9ee8-4f97-b949-073689bef2e4"
+      },
+      {
+          "type": "destination",
+          "destinations": [
+              "Facebook"
+          ],
+          "id": "9fb35526-bdb8-48fd-8385-2619092071e1"
+      }
   ],
   "edges": [
-    {
-      "source": "1",
-      "target": "2",
-      "data": {}
-    },
-    {
-      "source": "2",
-      "target": "10",
-      "data": {
-        "label": "yes",
-        "type": "response"
+      {
+          "source": "eddefa30-1eb5-4ce9-8564-fcba158fc2d8",
+          "target": "9b6701d8-5013-4f35-8d01-a94b906ba6b6",
+          "data": {
+              "label": "..."
+          },
+          "geometry": {
+              "0": "V",
+              "1": "e",
+              "2": "r",
+              "3": "t",
+              "4": "i",
+              "5": "c",
+              "6": "a",
+              "7": "l"
+          }
       },
-      "geometry": {
-        "segments": [
-          {
-            "x": -330,
-            "y": -165
-          },
-          {
-            "x": -390,
-            "y": -165
-          },
-          {
-            "x": -390,
-            "y": 675
+      {
+          "source": "9b6701d8-5013-4f35-8d01-a94b906ba6b6",
+          "target": "ea8865ac-f05b-4d8d-8113-5d80603c3b3d",
+          "data": {
+              "label": "..."
           }
-        ],
-        "source": {
-          "curX": -300,
-          "curY": -165,
-          "x": 0,
-          "y": 0.5,
-          "ox": -1,
-          "oy": 0
-        },
-        "target": {
-          "curX": -360,
-          "curY": 675,
-          "x": 0,
-          "y": 0.5,
-          "ox": -1,
-          "oy": 0
-        }
-      }
-    },
-    {
-      "source": "2",
-      "target": "3",
-      "data": {
-        "label": "no",
-        "type": "response"
-      }
-    },
-    {
-      "source": "3",
-      "target": "4",
-      "data": {
-        "label": "no",
-        "type": "response"
-      }
-    },
-    {
-      "source": "3",
-      "target": "8",
-      "data": {
-        "label": "yes",
-        "type": "response"
-      }
-    },
-    {
-      "source": "4",
-      "target": "1",
-      "data": {
-        "label": "no",
-        "type": "response"
       },
-      "geometry": {
-        "segments": [
-          {
-            "x": 690,
-            "y": -135
-          },
-          {
-            "x": 751,
-            "y": -135
-          },
-          {
-            "x": 751,
-            "y": -510
-          },
-          {
-            "x": -180,
-            "y": -510
+      {
+          "source": "ea8865ac-f05b-4d8d-8113-5d80603c3b3d",
+          "target": "a90f4af1-538f-448f-b531-b7a5a176817a",
+          "data": {
+              "label": "..."
           }
-        ],
-        "source": {
-          "curX": 660,
-          "curY": -135,
-          "x": 1,
-          "y": 0.5,
-          "ox": 1,
-          "oy": 0
-        },
-        "target": {
-          "curX": -180,
-          "curY": -480,
-          "x": 0.5,
-          "y": 0,
-          "ox": 0,
-          "oy": -1
-        }
-      }
-    },
-    {
-      "source": "4",
-      "target": "5",
-      "data": {
-        "label": "yes",
-        "type": "response"
-      }
-    },
-    {
-      "source": "5",
-      "target": "6",
-      "data": {
-        "label": "yes",
-        "type": "response"
       },
-      "geometry": {
-        "segments": [
-          {
-            "x": 315,
-            "y": 360
-          },
-          {
-            "x": 315,
-            "y": 450
-          },
-          {
-            "x": 150,
-            "y": 450
+      {
+          "source": "a90f4af1-538f-448f-b531-b7a5a176817a",
+          "target": "a52a0ebb-8040-4d7d-8ef8-34e142e263bd",
+          "data": {
+              "label": "..."
           }
-        ],
-        "source": {
-          "curX": 315,
-          "curY": 330,
-          "x": 0.5,
-          "y": 1,
-          "ox": 0,
-          "oy": 1
-        },
-        "target": {
-          "curX": 120,
-          "curY": 450,
-          "x": 1,
-          "y": 0.5,
-          "ox": 1,
-          "oy": 0
-        }
-      }
-    },
-    {
-      "source": "5",
-      "target": "7",
-      "data": {
-        "label": "no",
-        "type": "response"
-      }
-    },
-    {
-      "source": "6",
-      "target": "8",
-      "data": {
-        "label": "yes",
-        "type": "response"
-      }
-    },
-    {
-      "source": "7",
-      "target": "9",
-      "data": {}
-    },
-    {
-      "source": "8",
-      "target": "10",
-      "data": {},
-      "geometry": {
-        "segments": [
-          {
-            "x": -180,
-            "y": 135
-          },
-          {
-            "x": -225,
-            "y": 135
-          },
-          {
-            "x": -225,
-            "y": 570
-          }
-        ],
-        "source": {
-          "curX": -150,
-          "curY": 135,
-          "x": 0,
-          "y": 0.5,
-          "ox": -1,
-          "oy": 0
-        },
-        "target": {
-          "curX": -225,
-          "curY": 600,
-          "x": 0.5,
-          "y": 0,
-          "ox": 0,
-          "oy": -1
-        }
-      }
-    },
-    {
-      "source": "9",
-      "target": "1",
-      "data": {
-        "label": "no",
-        "type": "response"
       },
-      "geometry": {
-        "segments": [
-          {
-            "x": 850,
-            "y": 550
-          },
-          {
-            "x": 893,
-            "y": 550
-          },
-          {
-            "x": 893,
-            "y": -400
-          },
-          {
-            "x": -30,
-            "y": -400
+      {
+          "source": "a90f4af1-538f-448f-b531-b7a5a176817a",
+          "target": "25d4d89d-298a-4434-9029-1d411b8bf2fb",
+          "data": {
+              "label": "..."
           }
-        ],
-        "source": {
-          "curX": 820,
-          "curY": 550,
-          "x": 1,
-          "y": 0.5,
-          "ox": 1,
-          "oy": 0
-        },
-        "target": {
-          "curX": -60,
-          "curY": -400,
-          "x": 1,
-          "y": 0.5,
-          "ox": 1,
-          "oy": 0
-        }
-      }
-    },
-    {
-      "source": "9",
-      "target": "10",
-      "data": {
-        "label": "yes",
-        "type": "response"
       },
-      "geometry": {
-        "segments": [
-          {
-            "x": 645,
-            "y": 660
-          },
-          {
-            "x": 645,
-            "y": 675
-          },
-          {
-            "x": -60,
-            "y": 675
+      {
+          "source": "a90f4af1-538f-448f-b531-b7a5a176817a",
+          "target": "373b6f89-56dc-42a8-98f3-d78d9e24dd6a",
+          "data": {
+              "label": "..."
           }
-        ],
-        "source": {
-          "curX": 645,
-          "curY": 630,
-          "x": 0.5,
-          "y": 1,
-          "ox": 0,
-          "oy": 1
-        },
-        "target": {
-          "curX": -90,
-          "curY": 675,
-          "x": 1,
-          "y": 0.5,
-          "ox": 1,
-          "oy": 0
-        }
+      },
+      {
+          "source": "a52a0ebb-8040-4d7d-8ef8-34e142e263bd",
+          "target": "40f5ee3c-9ee8-4f97-b949-073689bef2e4",
+          "data": {
+              "label": "..."
+          }
+      },
+      {
+          "source": "25d4d89d-298a-4434-9029-1d411b8bf2fb",
+          "target": "9fb35526-bdb8-48fd-8385-2619092071e1",
+          "data": {
+              "label": "..."
+          }
+      },
+      {
+          "source": "373b6f89-56dc-42a8-98f3-d78d9e24dd6a",
+          "target": "6ba11f3e-77d8-409f-8968-b7a4b54affe1",
+          "data": {
+              "label": "..."
+          }
       }
-    }
-  ]
+  ],
+  "ports": [],
+  "groups": []
 }

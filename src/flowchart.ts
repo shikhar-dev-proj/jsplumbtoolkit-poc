@@ -29,8 +29,16 @@ import { OrthogonalConnector } from '@jsplumbtoolkit/connector-orthogonal'
 import * as OrthogonalConnectorEditor from '@jsplumbtoolkit/connector-editors-orthogonal'
 
 import {FlowchartService} from './app/flowchart.service'
+import { CustomStartNodeComponent } from './app/components/start/start.component'
+import { EntryConditionNodeComponent } from './app/components/entryCondition/entryCondition.component'
+import { HierarchyLayout } from '@jsplumbtoolkit/layout-hierarchy'
+import { DelayNodeComponent } from './app/components/delay/delay.component'
+import { HierarchicalLayout } from '@jsplumbtoolkit/layout-hierarchical'
+import { MultiBranchSplitNodeComponent } from './app/components/multibranchsplit/multibranchsplit.component'
+import { ConditionNodeComponent } from './app/components/condition/condition.component'
+import { DestinationNodeComponent } from './app/components/destination/destination.component'
 
-// initialize the orthogonal connector editor. This registers it on the Surface.
+// // initialize the orthogonal connector editor. This registers it on the Surface.
 OrthogonalConnectorEditor.initialize()
 
 const TARGET = 'target'
@@ -42,37 +50,19 @@ const OUTPUT = 'output'
 const QUESTION = 'question'
 const ACTION = 'action'
 
+
 @Component({
   selector: 'app-flowchart',
   template: `
 
     <div class="jtk-demo-canvas">
       <jsplumb-surface [surfaceId]="surfaceId" [toolkitId]="toolkitId" [view]="view" [renderParams]="renderParams"></jsplumb-surface>
-      <jsplumb-miniview [surfaceId]="surfaceId"></jsplumb-miniview>
       <jsplumb-controls [surfaceId]="surfaceId"></jsplumb-controls>
     </div>
 
       <div class="jtk-demo-rhs">
-        <div class="sidebar node-palette"
-             jsplumb-surface-drop
-             selector="div"
-             surfaceId="flowchartSurface"
-             [dataGenerator]="dataGenerator">
-          <div *ngFor="let nodeType of nodeTypes" class="sidebar-item" [attr.data-node-type]="nodeType.type" title="Drag to add new" [attr.data-width]="nodeType.w" [attr.data-height]="nodeType.h">{{nodeType.label}}</div>
-        </div>
-        <div class="description">
-          <p>
-            This sample application is a copy of the Flowchart Builder application, using the Toolkit's
-            Angular integration components and Angular CLI.
-          </p>
-          <ul>
-            <li>Drag new nodes from the palette on the left onto whitespace to add new disconnected nodes</li>
-            <li>Drag new nodes from the palette on the left onto on edge to drop a node between two existing nodes</li>
-            <li>Drag from the grey border of any node to any other node to establish a link, then provide a description for the link's label</li>
-            <li>Click a link to edit its label.</li>
-            <li>Click the 'Pencil' icon to enter 'select' mode, then select several nodes. Click the canvas to exit.</li>
-            <li>Click the 'Home' icon to zoom out and see all the nodes.</li>
-          </ul>
+        <div class="sidebar node-palette">
+          <button class="btn" (click)="saveWorkflow()">SAVE</button>
         </div>
       </div>
   `
@@ -97,7 +87,32 @@ export class FlowchartComponent implements AfterViewInit {
   view: AngularViewOptions = {
     nodes: {
       [START]: {
-        component: StartNodeComponent
+        component: StartNodeComponent,
+      },
+      'customstart': {
+        component: CustomStartNodeComponent,
+      },
+      'entrycondition': {
+        component: EntryConditionNodeComponent,
+        // parent: SELECTABLE,
+        events: {
+          click: (params: {obj: Vertex}) => {
+            console.log('entry condition node clicked ... : ', params);
+            this.fillEntryConditions(params);
+          }
+        }
+      },
+      'delay': {
+        component: DelayNodeComponent
+      },
+      'multibranchsplit': {
+        component: MultiBranchSplitNodeComponent
+      },
+      'condition': {
+        component: ConditionNodeComponent
+      },
+      'destination': {
+        component: DestinationNodeComponent
       },
       [SELECTABLE]: {
         events: {
@@ -121,10 +136,10 @@ export class FlowchartComponent implements AfterViewInit {
     },
     edges: {
       [DEFAULT]: {
-        anchor: AnchorLocations.AutoDefault,
+        anchor: ['Top', 'Bottom'],
         endpoint: BlankEndpoint.type,
-        connector: { type: OrthogonalConnector.type, options: { cornerRadius: 5 } },
-        paintStyle: { strokeWidth: 2, stroke: 'rgb(132, 172, 179)', outlineWidth: 3, outlineStroke: 'transparent' },	// 	paint style for this edge type.
+        connector: { type: OrthogonalConnector.type, options: { cornerRadius: 5, stub: 25 } },
+        paintStyle: { strokeWidth: 2, stroke: 'rgb(132, 172, 179)', outlineWidth: 3, outlineStroke: 'transparent' },
         hoverPaintStyle: { strokeWidth: 2, stroke: 'rgb(67,67,67)' }, // hover paint style for this edge type.
         events: {
           [EVENT_CLICK]: (p: {edge: Edge}) => {
@@ -142,9 +157,6 @@ export class FlowchartComponent implements AfterViewInit {
             });
           }
         },
-        overlays: [
-          { type: ArrowOverlay.type, options: { location: 1, width: 10, length: 10 }}
-        ]
       },
       [RESPONSE]: {
         parent: DEFAULT,
@@ -188,9 +200,19 @@ export class FlowchartComponent implements AfterViewInit {
   }
 
   renderParams = {
+    elementsDraggable: false,
     layout: {
-      type: SpringLayout.type
+      type: HierarchicalLayout.type,
+      options: {
+        // axis: 'vertical',
+        // placementStrategy: 'center',
+        align: 'center',
+        orientation: 'horizontal',
+        // spacing: 'auto',
+        // magnetize: true
+      }
     },
+    refreshLayoutOnEdgeConnect:true,
     events: {
       [EVENT_CANVAS_CLICK]: (params: any) => {
         this.pathEditor.stopEditing()
@@ -219,6 +241,11 @@ export class FlowchartComponent implements AfterViewInit {
   constructor(private flowchartService: FlowchartService) {
     this.toolkitId = 'flowchart';
     this.surfaceId = 'flowchartSurface';
+  }
+
+  fillEntryConditions(params) {
+    // params = { ...params, obj: { ...params.obj, conditions: ['Performed an Event', 'User attribute'] } }
+    this.toolkit.updateNode(params.obj.id, { ...params.obj.data, conditions: ['Performed an Event', 'User attribute']})
   }
 
   getToolkit(): BrowserUIAngular {
@@ -251,6 +278,11 @@ export class FlowchartComponent implements AfterViewInit {
     this.surface = this.surfaceComponent.surface;
     this.toolkit = this.surface.toolkitInstance
     this.pathEditor = new EdgePathEditor(this.surface)
+  }
+
+  saveWorkflow() {
+    debugger
+    console.log('JSON Data for the workflow .... : ', this.toolkit.exportData());
   }
 
 }

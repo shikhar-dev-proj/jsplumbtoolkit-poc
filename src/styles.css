@@ -8,6 +8,11 @@
 .jtk-surface {
   height:500px;
 }
+.jtk-surface-canvas {
+  height: 100% !important;
+  width: 100% !important;
+
+}
 
 .flowchart-object {
   background-color: transparent;

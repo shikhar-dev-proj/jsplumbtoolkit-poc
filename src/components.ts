@@ -1,6 +1,6 @@
 import {isNode} from '@jsplumbtoolkit/core'
 import {BaseNodeComponent} from '@jsplumbtoolkit/browser-ui-angular'
-import {Component} from '@angular/core'
+import {Component, Input, OnInit} from '@angular/core'
 import {FlowchartService} from './app/flowchart.service'
 
 
@@ -78,9 +78,15 @@ export class StartNodeComponent extends BaseEditableNodeComponent  {
 // ----------------- output node -------------------------------
 
 @Component({ templateUrl: 'templates/output.html' })
-export class OutputNodeComponent extends BaseEditableNodeComponent  {
+export class OutputNodeComponent extends BaseEditableNodeComponent implements OnInit {
+  @Input() conditions: String[];
   constructor(flowchartService: FlowchartService) {
     super(flowchartService)
+  }
+
+  ngOnInit(): void {
+    this.obj.header = 'Entry Conditions';
+    this.obj.conditions = [...this.conditions];
   }
 }
 

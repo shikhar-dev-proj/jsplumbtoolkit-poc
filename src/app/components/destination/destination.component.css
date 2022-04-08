@@ -1,0 +1,16 @@
+.destination-node-container {
+    width: 20.8rem;
+    height: 5rem;
+    border: 1px solid;
+    border-radius: 4px;
+    position: absolute;
+    box-sizing: border-box;
+}
+.destination-content {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}

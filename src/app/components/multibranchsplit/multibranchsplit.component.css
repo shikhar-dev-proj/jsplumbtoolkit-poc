@@ -1,0 +1,8 @@
+.multibranchsplit-container {
+    width: 9.375rem;
+    height: 2rem;
+    border: 1px solid black;
+    border-radius: 4px;
+    position: absolute;
+    text-align: center;
+}

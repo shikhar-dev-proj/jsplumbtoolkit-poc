@@ -1,0 +1,11 @@
+<div class="destination-node-container">
+    <div class="destination-content">
+        <div class="destination-header">Destinations</div>
+        <ng-container *ngIf="obj?.destinations?.length">
+            <ng-container *ngFor="let destination of obj.destinations">
+                <li>{{destination}}</li>
+            </ng-container>
+        </ng-container>
+    </div>
+    
+</div>

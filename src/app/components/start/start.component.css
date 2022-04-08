@@ -1,0 +1,8 @@
+.start-container {
+    width: 4rem;
+    height: 2rem;
+    border: 1px solid black;
+    border-radius: 4px;
+    position: absolute;
+    text-align: center;
+}

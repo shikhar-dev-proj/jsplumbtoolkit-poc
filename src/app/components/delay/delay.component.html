@@ -1,0 +1,11 @@
+<div class="delay-node-container">
+    <div class="delay-content">
+        <div class="entry-condition-header">12 Hour Delay</div>
+    </div>
+    <ng-container *ngIf="!obj?.isTailConnected">
+        <div class="connector">
+            <hr class="connector-line"/>
+            <div class="connector-btn" (click)="dispatchAddNodeEvent(); $event.stopPropagation()"></div>
+        </div>
+    </ng-container>
+</div>

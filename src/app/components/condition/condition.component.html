@@ -1,0 +1,17 @@
+<div class="condition-node-container">
+    <div class="condition-content">
+        <div class="condition-header">Condition</div>
+        <ng-container *ngIf="obj?.conditions?.length">
+            <ng-container *ngFor="let condition of obj.conditions">
+                <li>{{condition}}</li>
+            </ng-container>
+        </ng-container>
+    </div>
+    <ng-container *ngIf="!obj?.isTailConnected">
+        <div class="connector">
+            <hr class="connector-line"/>
+            <div class="connector-btn" (click)="dispatchAddNodeEvent(); $event.stopPropagation()"></div>
+        </div>
+    </ng-container>
+    
+</div>

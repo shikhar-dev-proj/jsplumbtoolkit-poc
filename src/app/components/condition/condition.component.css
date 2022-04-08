@@ -1,0 +1,38 @@
+.condition-node-container {
+    width: 20.8rem;
+    height: 5rem;
+    border: 1px solid;
+    border-radius: 4px;
+    position: absolute;
+    box-sizing: border-box;
+}
+.condition-content {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+.connector {
+    position: relative;
+}
+.connector-line {
+    transform: rotate(90deg);
+    position: relative;
+    width: 2.5rem;
+    top: 1.25rem;
+    padding: unset;
+    margin: unset;
+    left: 9.15rem;
+}
+.connector-btn {
+    border: 1px solid;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    left: calc(50% - 0.4rem);
+    top: 2.5rem;
+    position: relative;
+    cursor: pointer;
+}
