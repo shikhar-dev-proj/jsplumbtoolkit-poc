@@ -86,9 +86,6 @@ export class FlowchartComponent implements AfterViewInit {
 
   view: AngularViewOptions = {
     nodes: {
-      [START]: {
-        component: StartNodeComponent,
-      },
       'customstart': {
         component: CustomStartNodeComponent,
       },
@@ -113,32 +110,13 @@ export class FlowchartComponent implements AfterViewInit {
       },
       'destination': {
         component: DestinationNodeComponent
-      },
-      [SELECTABLE]: {
-        events: {
-          tap: (params: {obj: Vertex}) => {
-            this.toggleSelection(params.obj)
-          }
-        }
-      },
-      [QUESTION]: {
-        parent: SELECTABLE,
-        component: QuestionNodeComponent
-      },
-      [OUTPUT]: {
-        parent: SELECTABLE,
-        component: OutputNodeComponent
-      },
-      [ACTION]: {
-        parent: SELECTABLE,
-        component: ActionNodeComponent
       }
     },
     edges: {
       [DEFAULT]: {
         anchor: ['Top', 'Bottom'],
         endpoint: BlankEndpoint.type,
-        connector: { type: OrthogonalConnector.type, options: { cornerRadius: 5, stub: 25 } },
+        connector: { type: OrthogonalConnector.type, options: { cornerRadius: 20, stub: 25 } },
         paintStyle: { strokeWidth: 2, stroke: 'rgb(132, 172, 179)', outlineWidth: 3, outlineStroke: 'transparent' },
         hoverPaintStyle: { strokeWidth: 2, stroke: 'rgb(67,67,67)' }, // hover paint style for this edge type.
         events: {
@@ -158,44 +136,28 @@ export class FlowchartComponent implements AfterViewInit {
           }
         },
       },
-      [RESPONSE]: {
-        parent: DEFAULT,
-        overlays: [
-          {
-            type: LabelOverlay.type,
-            options: {
-              label: '${label}',
-              events: {
-                [EVENT_CLICK]: (params: {edge: Edge}) => {
-                  this.editLabel(params.edge)
-                }
-              }
-            }
-          }
-        ]
-      }
     },
     ports: {
-      [START]: {
-        endpoint: BlankEndpoint.type,
-        anchor: AnchorLocations.Continuous,
-        uniqueEndpoint: true,
-        edgeType: DEFAULT
-      },
-      [SOURCE]: {
-        endpoint: BlankEndpoint.type,
-        paintStyle: {fill: '#84acb3'},
-        anchor: AnchorLocations.AutoDefault,
-        maxConnections: -1,
-        edgeType: RESPONSE
-      },
-      [TARGET]: {
-        maxConnections: -1,
-        endpoint: BlankEndpoint.type,
-        anchor: AnchorLocations.AutoDefault,
-        paintStyle: {fill: '#84acb3'},
-        isTarget: true
-      }
+      // [START]: {
+      //   endpoint: BlankEndpoint.type,
+      //   anchor: AnchorLocations.Continuous,
+      //   uniqueEndpoint: true,
+      //   edgeType: DEFAULT
+      // },
+      // [SOURCE]: {
+      //   endpoint: BlankEndpoint.type,
+      //   paintStyle: {fill: '#84acb3'},
+      //   anchor: AnchorLocations.AutoDefault,
+      //   maxConnections: -1,
+      //   edgeType: RESPONSE
+      // },
+      // [TARGET]: {
+      //   maxConnections: -1,
+      //   endpoint: BlankEndpoint.type,
+      //   anchor: AnchorLocations.AutoDefault,
+      //   paintStyle: {fill: '#84acb3'},
+      //   isTarget: true
+      // }
     }
   }
 
@@ -281,7 +243,6 @@ export class FlowchartComponent implements AfterViewInit {
   }
 
   saveWorkflow() {
-    debugger
     console.log('JSON Data for the workflow .... : ', this.toolkit.exportData());
   }
 
